@@ -21,7 +21,11 @@ export default function Product(props) {
   }, [])
 
   const getProductDetails = () => {
-    getData(Constants.END_POINT.GET_PRODUCT + selected + `?user_id=74&lang_code=en`)
+    getData(Constants.END_POINT.GET_PRODUCT + selected, {
+      params: {
+        lang_code: 'en',
+      },
+    })
       .then((res) => {
         if (res.success) {
           dispatch({ type: 'set', varients: res.product.all_variants_for_features_variations })

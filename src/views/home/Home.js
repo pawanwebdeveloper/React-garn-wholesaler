@@ -19,7 +19,11 @@ export default function Home() {
   }, [])
 
   const getCategories = () => {
-    getData('api/GnCategoriesApi/?user_id=74&lang_code=en')
+    getData('api/GnCategoriesApi/', {
+      params: {
+        lang_code: 'en',
+      },
+    })
       .then((res) => {
         if (res.success) {
           dispatch({ type: 'set', categories: res.categories })

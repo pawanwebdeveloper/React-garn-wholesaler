@@ -2,11 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Constants from '../services/constant'
 import { getData } from '../services/http.service'
-
-import img1 from 'src/assets/images/img1.png'
-import img2 from 'src/assets/images/img2.png'
-import img3 from 'src/assets/images/img3.png'
-import img4 from 'src/assets/images/img4.png'
 import iconBadge from 'src/assets/icons/check-circle.png'
 
 export default function SubCategories(props) {
@@ -15,20 +10,52 @@ export default function SubCategories(props) {
   const selectedcategory = useSelector((state) => state.selectedcategory)
   const selected = useSelector((state) => state.selectedProduct)
 
+  const [pageNo, setPageNo] = useState(1)
+  const [totalPages, setTotalPages] = useState(null)
+  const itemsPerPage = 10
+
+  const [params, setParams] = useState({})
+
   useEffect(() => {
     getCategoryProducts()
+  }, [pageNo])
+  useEffect(() => {
     dispatch({ type: 'set', selectedProduct: null })
   }, [])
 
+  const renderPagination = () => {
+    let a = []
+    for (let i = pageNo - 2; i <= pageNo + 2; i++) {
+      if (i <= totalPages && i > 0) {
+        a.push(
+          <div
+            onClick={() => setPageNo(i)}
+            className={params?.page === i ? 'feature feature-active' : 'feature'}
+          >
+            {i}
+          </div>,
+        )
+      }
+    }
+    return a
+  }
+
   const getCategoryProducts = () => {
-    getData(
-      Constants.END_POINT.GET_CAT_PRODUCTS +
-        `?user_id=74&category_id=${selectedcategory.id}&page=1&items_per_page=10&lang_code=en`,
-    )
+    getData(Constants.END_POINT.GET_CAT_PRODUCTS, {
+      params: {
+        category_id: selectedcategory.id,
+        page: pageNo,
+        items_per_page: itemsPerPage,
+        lang_code: 'en',
+      },
+    })
       .then((res) => {
         if (res.success) {
           dispatch({ type: 'set', products: res.products })
           dispatch({ type: 'set', varients: res.varients })
+          setParams(res.search)
+          let len = res?.search?.total_items / res?.search?.items_per_page
+          setTotalPages(Math.ceil(len))
         }
       })
       .catch((err) => {
@@ -59,7 +86,6 @@ export default function SubCategories(props) {
       </div>
     ))
   }
-
   return (
     <div>
       <div className="paragraph2 text-medium my-1 text-black">
@@ -68,6 +94,32 @@ export default function SubCategories(props) {
       </div>
       <div className="paragraph1 text-medium my-1 text-black">Please Select Your Sub-category</div>
       <div className="d-flex flex-wrap">{renderType()}</div>
+
+      {/* renderPagination */}
+      <div className="d-flex justify-content-center mt-3 ">
+        <div className="d-flex flex-wrap ">
+          <div className="feature paragraph3" onClick={() => setPageNo(1)}>
+            PREV
+          </div>
+          <div
+            onClick={() => {
+              if (pageNo > 1) {
+                setPageNo(pageNo - 1)
+              }
+            }}
+            className="feature"
+          >
+            &lt;
+          </div>
+          {totalPages && renderPagination()}
+          <div className="feature" onClick={() => setPageNo(pageNo + 1)}>
+            &#62;
+          </div>
+          <div className="feature paragraph3" onClick={() => setPageNo(totalPages)}>
+            NEXT
+          </div>
+        </div>
+      </div>
       <br />
       <div
         className="large-btn"

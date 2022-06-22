@@ -229,3 +229,24 @@ a.page-link.border-0 {
   padding: 5px;
   height: 40px;
 }
+
+.feature {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #737a83;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: 0.25px solid #eef1f5;
+}
+.feature-active {
+  background-color: #ddc380;
+  color: #151522;
+}
