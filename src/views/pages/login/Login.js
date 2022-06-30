@@ -78,6 +78,7 @@ const Login = () => {
                     </CInputGroup>
                     <CInputGroup className="mb-3">
                       <CFormInput
+                        required={true}
                         value={values.email}
                         type="email"
                         id="nf-email"
@@ -93,6 +94,7 @@ const Login = () => {
                     </CInputGroup>
                     <CInputGroup className="mb-3">
                       <CFormInput
+                        required={true}
                         value={values.password}
                         type="password"
                         id="nf-password"
